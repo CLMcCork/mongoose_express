@@ -1,6 +1,4 @@
-const express = require('express');
-const app = express();
-const path = require('path');
+//connect to mongoose 
 const mongoose = require('mongoose'); 
 
 //require the product model (from product.js)
@@ -16,13 +14,17 @@ mongoose.connect('mongodb://localhost:27017/farmStand', {useNewUrlParser: true, 
     console.log(err)
 })
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-app.get('/dog', (req, res) => {
-    res.send('Woof!');
+const p = new Product({
+    name: 'Ruby Grapefruit',
+    price: 1.99,
+    category: 'fruit'
 })
 
-app.listen(3000, () => {
-    console.log("ON PORT 3000!!!")
-})
+// p.save().then(p => {
+//     console.log(p);
+// })
+//     .catch(e => {
+//         console.log(e);
+//     })
+
+const seedProducts
