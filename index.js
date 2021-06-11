@@ -16,11 +16,15 @@ mongoose.connect('mongodb://localhost:27017/farmStand', {useNewUrlParser: true, 
     console.log(err)
 })
 
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.get('/dog', (req, res) => {
-    res.send('Woof!');
+//Index (list of current products in database)--takes awhile so use an async function
+app.get('/products', async (req, res) => {
+    const products = await Product.find({}) //await this mongoose operation //sends back all products 
+    //console.log(products) to see if it's working 
+    res.render('products/index', { products }) //renders the index.ejs file //then passes through all of the products that are found
 })
 
 app.listen(3000, () => {
