@@ -27,6 +27,13 @@ app.get('/products', async (req, res) => {
     res.render('products/index', { products }) //renders the index.ejs file //then passes through all of the products that are found
 })
 
+//view details about a single product 
+app.get('/products/:id', async (req, res) => {
+    const { id } = req.params;
+    const product = await Product.findById(id)
+    res.render('products/show', { product })
+})
+
 app.listen(3000, () => {
     console.log("ON PORT 3000!!!")
 })
