@@ -44,8 +44,16 @@ app.post('/products', async (req, res) => {
 //view details about a single product by id 
 app.get('/products/:id', async (req, res) => {
     const { id } = req.params;
-    const product = await Product.findById(id)
+    const product = await Product.findById(id);
     res.render('products/show', { product })
+})
+
+
+//edit/update a product
+app.get('/products/:id/edit', async (req, res) => {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    res.render('products/edit', { product })
 })
 
 app.listen(3000, () => {
