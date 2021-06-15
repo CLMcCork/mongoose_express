@@ -26,6 +26,8 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'))
 
+const categories = ['fruit', 'vegetable', 'dairy'];
+
 //Index (list of all current products in database)--takes awhile so use an async function
 app.get('/products', async (req, res) => {
     const products = await Product.find({}) //await this mongoose operation //sends back all products 
@@ -36,7 +38,7 @@ app.get('/products', async (req, res) => {
 //brings up the form to create a new product
 //submits the form to a post route
 app.get('/products/new', (req, res) => {
-    res.render('products/new')
+    res.render('products/new', { categories })
 })
 
 //submits the form, creates new product in db, and redirects 
@@ -58,7 +60,7 @@ app.get('/products/:id', async (req, res) => {
 app.get('/products/:id/edit', async (req, res) => {
     const { id } = req.params;
     const product = await Product.findById(id);
-    res.render('products/edit', { product })
+    res.render('products/edit', { product , categories })
 })
 
 //this actually updates/edits the product using mongoose 
