@@ -30,9 +30,15 @@ const categories = ['fruit', 'vegetable', 'dairy'];
 
 //Index (list of all current products in database)--takes awhile so use an async function
 app.get('/products', async (req, res) => {
-    const products = await Product.find({}) //await this mongoose operation //sends back all products 
-    //console.log(products) to see if it's working 
-    res.render('products/index', { products }) //renders the index.ejs file //then passes through all of the products that are found
+    const { category } = req.query;
+    if(category) {
+        const products = await Product.find({ category })
+        res.render('products/index', { products, category }) //renders the index.ejs file //then passes through all of the products that are found
+    } else {
+        const products = await Product.find({}) //await this mongoose operation //sends back all products 
+        //console.log(products) to see if it's working 
+        res.render('products/index', { products, category: 'All' })
+    }
 })
 
 //brings up the form to create a new product
