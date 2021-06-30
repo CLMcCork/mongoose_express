@@ -53,14 +53,15 @@ app.post('/farms', async (req, res) => {
 
 //SHOW PAGE (details page for a single farm)
 app.get('/farms/:id', async (req, res) => {
-    const farm = await Farm.findById(req.params.id); 
+    const farm = await Farm.findById(req.params.id).populate('products'); //name set up on farm model to populate 
     res.render('farms/show', { farm }); 
 });
 
 //new route that gives the form to add a product to a farm 
-app.get('/farms/:id/products/new', (req, res) => {
+app.get('/farms/:id/products/new', async (req, res) => {
     const { id } = req.params;
-    res.render('products/new', { categories, id });
+    const farm = await Farm.findById(id); //find the farm by the id 
+    res.render('products/new', { categories, farm });
 });
 
 //submits the form, creates new product for the farm db, and redirects 
@@ -74,7 +75,7 @@ app.post('/farms/:id/products', async (req, res) => {
     product.farm = farm; 
     await farm.save();
     await product.save();
-    res.send(farm);
+    res.redirect(`/farms/${id}`);
 });
 
 
@@ -96,27 +97,28 @@ app.get('/products', async (req, res) => {
         //console.log(products) to see if it's working 
         res.render('products/index', { products, category: 'All' })
     }
-})
+});
 
 //brings up the form to create a new product
 //submits the form to a post route
 app.get('/products/new', (req, res) => {
     res.render('products/new', { categories })
-})
+});
 
 //submits the form, creates new product in db, and redirects 
 app.post('/products', async (req, res) => {
     const newProduct = new Product(req.body);
     await newProduct.save();
     res.redirect(`/products/${newProduct._id}`)
-})
+});
 
 //view details about a single product by id i.e. show page 
 app.get('/products/:id', async (req, res) => {
     const { id } = req.params;
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate('farm', 'name');
+    //console.log(product);
     res.render('products/show', { product })
-})
+});
 
 
 //edit/update a product ---renders the edit page 
@@ -124,22 +126,22 @@ app.get('/products/:id/edit', async (req, res) => {
     const { id } = req.params;
     const product = await Product.findById(id);
     res.render('products/edit', { product , categories })
-})
+});
 
 //this actually updates/edits the product using mongoose 
 app.put('/products/:id', async (req, res) => {
     const { id } = req.params;
     const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
     res.redirect(`/products/${product._id}`);
-})
+});
 
 //DELETE an item
 app.delete('/products/:id', async (req, res) => {
     const { id } = req.params;
     const deleteProduct = await Product.findByIdAndDelete(id); 
     res.redirect('/products');
-} )
+});
 
 app.listen(3000, () => {
     console.log("ON PORT 3000!!!")
-})
+});
