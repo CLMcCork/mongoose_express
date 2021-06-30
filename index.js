@@ -30,7 +30,7 @@ app.use(methodOverride('_method'))
 
 
 
-//FARM ROUTES 
+//FARM ROUTES (RESTful routes)
 
 //farm index page
 app.get('/farms', async (req, res) => {
@@ -55,8 +55,27 @@ app.post('/farms', async (req, res) => {
 app.get('/farms/:id', async (req, res) => {
     const farm = await Farm.findById(req.params.id); 
     res.render('farms/show', { farm }); 
-})
+});
 
+//new route that gives the form to add a product to a farm 
+app.get('/farms/:id/products/new', (req, res) => {
+    const { id } = req.params;
+    res.render('products/new', { categories, id });
+});
+
+//submits the form, creates new product for the farm db, and redirects 
+app.post('/farms/:id/products', async (req, res) => {
+    //to test to see if getting the data: res.send(req.body); 
+    const { id } = req.params; //look up farm id 
+    const farm = await Farm.findById(id); //find the farm by the id 
+    const { name, price, category } = req.body;
+    const product = new Product({ name, price, category }); //make a new product 
+    farm.products.push(product);
+    product.farm = farm; 
+    await farm.save();
+    await product.save();
+    res.send(farm);
+});
 
 
 
