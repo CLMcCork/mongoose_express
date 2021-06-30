@@ -21,3 +21,7 @@ const farmSchema = new Schema({
         }
     ]
 })
+
+//creating and exporting the farm model 
+const Farm = mongoose.model('Farm', farmSchema);
+module.exports = Farm; 

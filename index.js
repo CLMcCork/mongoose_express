@@ -7,6 +7,8 @@ const methodOverride = require('method-override');
 
 //require the product model (from product.js)
 const Product = require('./models/product');
+//require the Farm model (from farm.js)
+const Farm = require('./models/farm');
 
 //connects w/ the database 
 mongoose.connect('mongodb://localhost:27017/farmStand', {useNewUrlParser: true, useUnifiedTopology: true})
@@ -26,6 +28,35 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'))
 
+
+
+//FARM ROUTES 
+
+//farm index page
+app.get('/farms', async (req, res) => {
+    const farms = await Farm.find({});
+    res.render('farms/index', { farms });
+});
+
+//brings up the add a farm form 
+app.get('/farms/new', (req, res) => {
+    res.render('farms/new')
+});
+
+//submits the form, creates new farm in db, and redirects 
+app.post('/farms', async (req, res) => {
+    ////to see if working: res.send(req.body); 
+    const farm = new Farm(req.body);
+    await farm.save();
+    res.redirect('/farms');
+});
+
+
+
+
+
+
+//PRODUCT ROUTES 
 const categories = ['fruit', 'vegetable', 'dairy'];
 
 //Index (list of all current products in database)--takes awhile so use an async function
