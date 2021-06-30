@@ -51,6 +51,13 @@ app.post('/farms', async (req, res) => {
     res.redirect('/farms');
 });
 
+//SHOW PAGE (details page for a single farm)
+app.get('/farms/:id', async (req, res) => {
+    const farm = await Farm.findById(req.params.id); 
+    res.render('farms/show', { farm }); 
+})
+
+
 
 
 
@@ -85,7 +92,7 @@ app.post('/products', async (req, res) => {
     res.redirect(`/products/${newProduct._id}`)
 })
 
-//view details about a single product by id 
+//view details about a single product by id i.e. show page 
 app.get('/products/:id', async (req, res) => {
     const { id } = req.params;
     const product = await Product.findById(id);
